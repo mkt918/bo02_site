@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>中学生のための簿記学習 | ドキドキ！はじめての簿記</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&family=Noto+Sans+JP:wght@400;700&display=swap"
+    rel="stylesheet">
+</head>
+
+<body class="min-h-screen flex flex-col">
+  <!-- Navigation -->
+  <nav class="sticky top-0 z-50 glass shadow-sm h-16 flex items-center px-6">
+    <div class="max-w-7xl mx-auto w-full flex justify-between items-center">
+      <h1 class="text-2xl font-bold text-primary-600 tracking-tight">ドキドキ！はじめての簿記</h1>
+      <div class="hidden md:flex space-x-8 text-slate-600 font-medium">
+        <a href="#" class="hover:text-primary-600 transition-colors" onclick="window.renderLanding()">ホーム</a>
+        <a href="#" class="hover:text-primary-600 transition-colors" onclick="window.renderHome()">単元一覧</a>
+        <a href="#" class="hover:text-primary-600 transition-colors" onclick="window.startUnit('intro')">簿記とは？</a>
+      </div>
+      <button class="btn-primary" onclick="window.renderHome()">学習をはじめる</button>
+    </div>
+  </nav>
+
+  <main id="app" class="flex-grow">
+    <!-- Content goes here -->
+  </main>
+
+  <footer class="bg-slate-900 text-slate-400 py-12 px-6">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left">
+      <div class="mb-6 md:mb-0">
+        <p class="font-bold text-white mb-2">ドキドキ！はじめての簿記</p>
+        <p class="text-sm">Created by Antigravity for mkt918</p>
+      </div>
+      <div class="flex space-x-6">
+        <a href="#" class="hover:text-white transition-colors">利用規約</a>
+        <a href="#" class="hover:text-white transition-colors">プライバシーポリシー</a>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="./src/main.js"></script>
+</body>
+
+</html>
