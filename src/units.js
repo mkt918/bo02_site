@@ -20,14 +20,7 @@ export const units = [
         lessons: [
             {
                 title: '簿記はビジネスの記録係',
-                content: `
-          <p class="mb-4">簿記（ぼき）とは、<strong>「帳簿（ちょうぼ）」に「記録（きろく）」すること</strong>の略です。</p>
-          <div class="bg-blue-50 p-4 rounded-xl border border-blue-100 mb-4">
-            <h4 class="font-bold text-blue-800 mb-2">💡 なぜ簿記が必要なの？</h4>
-            <p class="text-blue-700 text-sm">お店の店長さんは、毎日たくさんのお客さんとお金のやり取りをします。全部記憶するのは無理ですよね？だから、ルールに従って正しく記録する必要があるんです。</p>
-          </div>
-          <p>正しく記録すると、1年の終わりに「あ！今年は100万円儲かったんだ！」とか「今、お店には現金が50万円あるぞ」というのが正確にわかります。</p>
-        `
+                file: 'intro.html'
             }
         ],
         quizzes: [
