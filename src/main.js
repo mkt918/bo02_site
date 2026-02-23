@@ -79,9 +79,11 @@ function renderHome() {
 function renderUnit(unitId) {
   const unit = units.find(u => u.id === unitId);
   currentUnit = unit;
-  if (unit.slides.length > 0) {
+  if (unit.reviewQuizzes && unit.reviewQuizzes.length > 0) {
+    renderReviewQuizPage(0);
+  } else if (unit.slides && unit.slides.length > 0) {
     renderSlidePage(0);
-  } else if (unit.lessons.length > 0) {
+  } else if (unit.lessons && unit.lessons.length > 0) {
     renderLessonPage();
   } else {
     alert('準備中です！');
@@ -130,6 +132,77 @@ function renderSlidePage(index) {
   window.scrollTo(0, 0);
 }
 
+function renderReviewQuizPage(index) {
+  currentMode = 'review';
+  const quiz = currentUnit.reviewQuizzes[index];
+
+  app.innerHTML = `
+    <div class="min-h-screen py-12 px-6 bg-slate-50 animate-in fade-in duration-500">
+      <div class="max-w-2xl mx-auto">
+        <!-- Progress Bar -->
+        <div class="flex items-center space-x-2 mb-10">
+          <div class="flex-grow h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div class="h-full bg-primary-600 transition-all duration-1000" style="width: 25%"></div>
+          </div>
+          <span class="text-xs font-bold text-slate-400 whitespace-nowrap">ステップ 1/4 (前回の復習)</span>
+        </div>
+
+        <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 p-8 md:p-14 text-center border border-slate-100">
+          <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-orange-50 text-orange-700 text-xs font-bold mb-8">
+            <span class="mr-2">🔄</span> REVIEW QUIZ ${index + 1}
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-12 text-slate-800 leading-tight">${quiz.question}</h2>
+          
+          <div class="grid grid-cols-1 gap-4 text-left">
+            ${quiz.options.map((option, i) => `
+              <button onclick="window.checkReviewQuiz(${index}, ${i})" 
+                class="group w-full p-6 rounded-2xl border-2 border-slate-50 bg-slate-50/50 font-bold text-slate-700 
+                hover:border-orange-400 hover:bg-orange-50 hover:text-orange-700 transition-all duration-300
+                flex justify-between items-center text-lg active:scale-[0.98]">
+                <span class="flex-grow pr-4">${option}</span>
+                <div class="flex-shrink-0 h-8 w-8 rounded-full border-2 border-slate-200 bg-white group-hover:border-orange-400 group-hover:bg-orange-100 flex items-center justify-center transition-colors">
+                  <div class="h-3 w-3 rounded-full bg-orange-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+              </button>
+            `).join('')}
+          </div>
+        </div>
+
+        <div class="mt-8 text-center">
+           <button onclick="window.renderHome()" class="text-slate-400 text-sm font-bold hover:text-slate-600 hover:underline transition-all">← 単元一覧に戻る</button>
+        </div>
+      </div>
+    </div>
+  `;
+  window.scrollTo(0, 0);
+}
+
+function checkReviewQuiz(quizIndex, selectedIndex) {
+  const quiz = currentUnit.reviewQuizzes[quizIndex];
+  const isCorrect = selectedIndex === quiz.answer;
+  const isLast = quizIndex >= currentUnit.reviewQuizzes.length - 1;
+
+  const modal = document.createElement('div');
+  modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-6';
+  modal.innerHTML = `
+    <div class="bg-white rounded-[2.5rem] shadow-2xl max-w-sm w-full p-10 text-center animate-in zoom-in duration-300 border border-slate-100">
+      <div class="h-24 w-24 ${isCorrect ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'} rounded-full flex items-center justify-center text-5xl mx-auto mb-8 shadow-inner">
+        ${isCorrect ? '✨' : '❌'}
+      </div>
+      <h3 class="text-3xl font-bold mb-4 text-slate-800">${isCorrect ? 'その調子！' : 'おしい！'}</h3>
+      <div class="bg-slate-50 rounded-2xl p-6 mb-8 text-left">
+        <p class="text-slate-600 leading-relaxed font-medium">${quiz.explanation}</p>
+      </div>
+      <button onclick="this.closest('.fixed').remove(); ${isCorrect ? (isLast ? 'window.renderLessonPage()' : `window.renderReviewQuizPage(${quizIndex + 1})`) : ''}" 
+        class="w-full py-4 rounded-2xl font-bold text-lg transition-all active:scale-[0.95] 
+        ${isCorrect ? 'bg-orange-500 text-white shadow-lg shadow-orange-500/30' : 'bg-slate-200 text-slate-600 hover:bg-slate-300 shadow-sm'}">
+        ${isCorrect ? (isLast ? '今日のレッスンへ進む →' : '次の復習へ進む') : 'もう一度考える'}
+      </button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
 async function renderLessonPage() {
   currentMode = 'lesson';
   const lesson = currentUnit.lessons[0];
@@ -168,19 +241,29 @@ async function renderLessonPage() {
           <div class="flex-grow h-2 bg-slate-200 rounded-full overflow-hidden">
             <div class="h-full bg-primary-600 w-2/4"></div>
           </div>
-          <span class="text-xs font-bold text-slate-400 whitespace-nowrap">ステップ 2/4 (内容解説)</span>
+          <span class="text-xs font-bold text-slate-400 whitespace-nowrap">ステップ 2/4 (スライド＆解説)</span>
         </div>
 
         <article class="bg-white rounded-3xl shadow-lg p-8 md:p-12 mb-8">
           <h2 class="text-3xl font-bold mb-8 text-slate-900 border-b pb-6 !mt-0">${lesson.title}</h2>
+          
+          <!-- Embedded Presentation Frame -->
+          ${lesson.presentationUrl ? `
+            <div class="mb-12 rounded-2xl overflow-hidden shadow-md border border-slate-200 bg-slate-100">
+              <div class="relative w-full" style="padding-bottom: 56.25%;">
+                <iframe src="${lesson.presentationUrl}" class="absolute top-0 left-0 w-full h-full" frameborder="0" allowfullscreen="true"></iframe>
+              </div>
+            </div>
+          ` : ''}
+
           <div class="text-slate-700 leading-relaxed note-content">
             ${lessonContent}
           </div>
         </article>
 
         <div class="flex justify-between items-center">
-          <button onclick="window.renderSlidePage(0)" class="text-slate-500 font-bold hover:text-slate-700 transition-colors">← スライドに戻る</button>
-          <button onclick="window.renderQuizPage(0)" class="btn-primary shadow-lg shadow-primary-500/30">復習クイズに進む →</button>
+          <button onclick="${currentUnit.reviewQuizzes ? `window.renderReviewQuizPage(0)` : `window.renderHome()`}" class="text-slate-500 font-bold hover:text-slate-700 transition-colors">← 戻る</button>
+          <button onclick="window.renderQuizPage(0)" class="btn-primary shadow-lg shadow-primary-500/30">確認クイズに進む →</button>
         </div>
       </div>
     </div>
@@ -338,6 +421,8 @@ function checkExercise(index, selected) {
 // Global exposure for event handlers
 window.startUnit = renderUnit;
 window.renderSlidePage = renderSlidePage;
+window.renderReviewQuizPage = renderReviewQuizPage;
+window.checkReviewQuiz = checkReviewQuiz;
 window.renderLessonPage = renderLessonPage;
 window.renderQuizPage = renderQuizPage;
 window.checkQuiz = checkQuiz;
