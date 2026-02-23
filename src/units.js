@@ -2,7 +2,7 @@ export const units = [
     {
         id: 'intro',
         title: '第1章：簿記ってなに？',
-        description: '簿記の役割と、なぜみんなが勉強するのかを学びます。',
+        description: '簿記の社会的役割と、効率的な学習の必要性を理解します。',
         icon: '📽️',
         color: 'blue',
         slides: [

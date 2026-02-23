@@ -15,8 +15,8 @@ function renderLanding() {
           <span class="text-primary-600 italic">世界がもっとおもしろくなる！</span>
         </h2>
         <p class="text-lg text-slate-600 mb-10 leading-relaxed">
-          簿記（ぼき）は、会社やお店のお金の動きを記録する「ビジネスの共通言語」。<br>
-          中学生のキミでも、クイズ感覚で楽しくマスターできるよ！
+          簿記（ぼき）は、会社やお店のお金の動きを記録する「ビジネスの基礎教養」。<br>
+          将来に役立つスキルを、クイズ感覚で効率よくマスターしよう！
         </p>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-left mb-12">
           <div class="p-6 glass rounded-2xl card-hover border-blue-100 border bg-white/50">
@@ -347,4 +347,4 @@ window.renderHome = renderHome;
 window.renderLanding = renderLanding;
 
 // Initial render
-renderLanding();
+renderHome();
