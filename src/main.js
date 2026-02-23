@@ -1,8 +1,9 @@
 import './style.css'
-import { units } from './units.js'
+import { chapters } from './units.js';
 
-let currentUnit = null;
-let currentMode = 'home'; // home, slide, lesson, quiz, exercise
+let currentChapter = null;
+let currentTopic = null;
+let currentMode = 'home'; // 'home', 'chapter', 'review', 'lesson', 'quiz', 'exercise'
 
 const app = document.getElementById('app');
 
@@ -49,26 +50,35 @@ function renderLanding() {
 
 function renderHome() {
   currentMode = 'home';
+  currentChapter = null;
+  currentTopic = null;
+
   app.innerHTML = `
     <section class="py-12 px-6">
       <div class="max-w-7xl mx-auto">
         <h2 class="text-3xl font-bold mb-8 text-slate-800">学習ロードマップ</h2>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          ${units.map(unit => `
-            <div class="bg-white p-8 rounded-3xl border border-slate-100 shadow-sm card-hover cursor-pointer group" onclick="window.startUnit('${unit.id}')">
-              <div class="h-16 w-16 bg-${unit.color}-100 rounded-2xl flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform">
-                ${unit.icon}
+          <!-- Road Map Selection -->
+          <div class="space-y-6">
+            ${chapters.map((chapter, index) => `
+              <div onclick="window.renderChapter('${chapter.id}')" 
+                class="bg-white rounded-[2rem] p-6 shadow-sm border border-slate-100 hover:shadow-xl hover:border-${chapter.color}-200 transition-all duration-300 cursor-pointer group transform hover:-translate-y-1 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-${chapter.color}-50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div class="relative z-10 flex items-center">
+                  <div class="bg-${chapter.color}-100 text-${chapter.color}-600 text-4xl p-5 rounded-2xl mr-6 group-hover:scale-110 transition-transform shadow-inner">
+                    ${chapter.icon}
+                  </div>
+                  <div class="flex-grow">
+                    <h3 class="font-bold text-slate-800 text-xl mb-2 group-hover:text-${chapter.color}-700 transition-colors">${chapter.title}</h3>
+                    <p class="text-slate-500 text-sm leading-relaxed">${chapter.description}</p>
+                  </div>
+                  <div class="text-slate-300 group-hover:text-${chapter.color}-500 transition-colors ml-4">
+                    <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                  </div>
+                </div>
               </div>
-              <h3 class="text-xl font-bold mb-3 text-slate-900">${unit.title}</h3>
-              <p class="text-slate-500 text-sm mb-6">${unit.description}</p>
-              <div class="flex items-center text-primary-600 font-bold group-hover:translate-x-2 transition-transform">
-                学習をはじめる
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd" />
-                </svg>
-              </div>
-            </div>
-          `).join('')}
+            `).join('')}
+          </div>
         </div>
       </div>
     </section>
@@ -76,12 +86,69 @@ function renderHome() {
   window.scrollTo(0, 0);
 }
 
-function renderUnit(unitId) {
-  const unit = units.find(u => u.id === unitId);
-  currentUnit = unit;
-  if (unit.reviewQuizzes && unit.reviewQuizzes.length > 0) {
+function renderChapter(chapterId) {
+  currentMode = 'chapter';
+  const chapter = chapters.find(c => c.id === chapterId);
+  currentChapter = chapter;
+  currentTopic = null;
+
+  app.innerHTML = `
+    <div class="min-h-screen pt-12 pb-24 px-6 bg-slate-50 relative overflow-hidden">
+      <!-- Decorative background elements -->
+      <div class="absolute top-[-10%] right-[-5%] w-96 h-96 bg-${chapter.color}-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+      <div class="absolute bottom-[-10%] left-[-5%] w-96 h-96 bg-${chapter.color}-300 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+
+      <div class="max-w-4xl mx-auto relative z-10">
+        
+        <div class="flex items-center space-x-4 mb-10">
+          <button onclick="window.renderHome()" class="text-slate-500 hover:text-slate-800 transition-colors p-2 bg-white rounded-full shadow-sm hover:shadow-md">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+          </button>
+          <div class="flex items-center space-x-3">
+            <span class="text-3xl">${chapter.icon}</span>
+            <h1 class="text-3xl md:text-4xl font-black text-slate-800 tracking-tight">${chapter.title}</h1>
+          </div>
+        </div>
+
+        <p class="text-slate-600 mb-12 ml-14">${chapter.description}</p>
+
+        <div class="bg-white rounded-3xl shadow-lg border border-slate-100 overflow-hidden">
+          <div class="bg-${chapter.color}-500 text-white font-bold py-4 px-8 text-lg">学習トピックを選択</div>
+          <div class="divide-y divide-slate-100">
+            ${chapter.topics.map((topic, index) => {
+    const hasContent = topic.lessons && topic.lessons.length > 0;
+    return `
+              <div class="p-6 md:p-8 flex items-center transition-colors ${hasContent ? `hover:bg-${chapter.color}-50 cursor-pointer` : 'opacity-60'} group" 
+                ${hasContent ? `onclick="window.startTopic('${topic.id}')"` : ''}>
+                <div class="flex-shrink-0 w-12 h-12 rounded-full bg-${hasContent ? `${chapter.color}-100 text-${chapter.color}-600` : 'slate-100 text-slate-400'} flex items-center justify-center font-bold text-xl mr-6 font-mono">
+                  ${index + 1}
+                </div>
+                <div class="flex-grow">
+                  <h3 class="text-xl font-bold ${hasContent ? 'text-slate-800 group-hover:text-slate-900' : 'text-slate-500'}">${topic.title}</h3>
+                  ${!hasContent ? '<p class="text-sm text-slate-400 mt-1">準備中...</p>' : ''}
+                </div>
+                ${hasContent ? `
+                  <div class="flex-shrink-0 text-slate-300 group-hover:text-${chapter.color}-500 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                  </div>
+                ` : ''}
+              </div>
+            `;
+  }).join('')}
+          </div>
+        </div>
+
+      </div>
+    </div>
+  `;
+}
+
+function startTopic(topicId) {
+  const topic = currentChapter.topics.find(t => t.id === topicId);
+  currentTopic = topic;
+  if (topic.reviewQuizzes && topic.reviewQuizzes.length > 0) {
     renderReviewQuizPage(0);
-  } else if (unit.lessons && unit.lessons.length > 0) {
+  } else if (topic.lessons && topic.lessons.length > 0) {
     renderLessonPage();
   } else {
     alert('準備中です！');
@@ -90,7 +157,7 @@ function renderUnit(unitId) {
 
 function renderReviewQuizPage(index) {
   currentMode = 'review';
-  const quiz = currentUnit.reviewQuizzes[index];
+  const quiz = currentTopic.reviewQuizzes[index];
 
   app.innerHTML = `
     <div class="min-h-screen py-12 px-6 bg-slate-50 animate-in fade-in duration-500">
@@ -125,7 +192,7 @@ function renderReviewQuizPage(index) {
         </div>
 
         <div class="mt-8 text-center">
-           <button onclick="window.renderHome()" class="text-slate-400 text-sm font-bold hover:text-slate-600 hover:underline transition-all">← 単元一覧に戻る</button>
+           <button onclick="window.renderChapter('${currentChapter.id}')" class="text-slate-400 text-sm font-bold hover:text-slate-600 hover:underline transition-all">← 単元一覧に戻る</button>
         </div>
       </div>
     </div>
@@ -134,9 +201,9 @@ function renderReviewQuizPage(index) {
 }
 
 function checkReviewQuiz(quizIndex, selectedIndex) {
-  const quiz = currentUnit.reviewQuizzes[quizIndex];
+  const quiz = currentTopic.reviewQuizzes[quizIndex];
   const isCorrect = selectedIndex === quiz.answer;
-  const isLast = quizIndex >= currentUnit.reviewQuizzes.length - 1;
+  const isLast = quizIndex >= currentTopic.reviewQuizzes.length - 1;
 
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-6';
@@ -161,7 +228,7 @@ function checkReviewQuiz(quizIndex, selectedIndex) {
 
 async function renderLessonPage() {
   currentMode = 'lesson';
-  const lesson = currentUnit.lessons[0];
+  const lesson = currentTopic.lessons[0];
 
   // Show loading state first
   app.innerHTML = `
@@ -218,7 +285,7 @@ async function renderLessonPage() {
         </article>
 
         <div class="flex justify-between items-center">
-          <button onclick="${currentUnit.reviewQuizzes ? `window.renderReviewQuizPage(0)` : `window.renderHome()`}" class="text-slate-500 font-bold hover:text-slate-700 transition-colors">← 戻る</button>
+          <button onclick="${currentTopic.reviewQuizzes && currentTopic.reviewQuizzes.length > 0 ? `window.renderReviewQuizPage(${currentTopic.reviewQuizzes.length - 1})` : `window.renderChapter('${currentChapter.id}')`}" class="text-slate-500 font-bold hover:text-slate-700 transition-colors">← 戻る</button>
           <button onclick="window.renderQuizPage(0)" class="btn-primary shadow-lg shadow-primary-500/30">確認クイズに進む →</button>
         </div>
       </div>
@@ -228,7 +295,7 @@ async function renderLessonPage() {
 
 function renderQuizPage(index) {
   currentMode = 'quiz';
-  const quiz = currentUnit.quizzes[index];
+  const quiz = currentTopic.quizzes[index];
 
   app.innerHTML = `
     <div class="min-h-screen py-12 px-6 bg-slate-50 animate-in fade-in duration-500">
@@ -272,7 +339,7 @@ function renderQuizPage(index) {
 }
 
 function checkQuiz(quizIndex, selectedIndex) {
-  const quiz = currentUnit.quizzes[quizIndex];
+  const quiz = currentTopic.quizzes[quizIndex];
   const isCorrect = selectedIndex === quiz.answer;
 
   const modal = document.createElement('div');
@@ -298,7 +365,7 @@ function checkQuiz(quizIndex, selectedIndex) {
 
 function renderExercisePage(index) {
   currentMode = 'exercise';
-  const exercise = currentUnit.exercises[index];
+  const exercise = currentTopic.exercises[index];
 
   app.innerHTML = `
     <div class="min-h-screen py-12 px-6 bg-slate-50 animate-in slide-in-from-right duration-500">
@@ -345,7 +412,7 @@ function renderExercisePage(index) {
 }
 
 function checkExercise(index, selectedIndex) {
-  const exercise = currentUnit.exercises[index];
+  const exercise = currentTopic.exercises[index];
   const isCorrect = selectedIndex === exercise.answer;
 
   const modal = document.createElement('div');
@@ -369,7 +436,9 @@ function checkExercise(index, selectedIndex) {
 }
 
 // Global exposure for event handlers
-window.startUnit = renderUnit;
+window.renderHome = renderHome;
+window.renderChapter = renderChapter;
+window.startTopic = startTopic;
 window.renderReviewQuizPage = renderReviewQuizPage;
 window.checkReviewQuiz = checkReviewQuiz;
 window.renderLessonPage = renderLessonPage;
