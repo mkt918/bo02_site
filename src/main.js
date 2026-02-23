@@ -192,31 +192,43 @@ function renderQuizPage(index) {
   const quiz = currentUnit.quizzes[index];
 
   app.innerHTML = `
-    < div class= "min-h-screen py-12 px-6 bg-primary-50" >
+    <div class="min-h-screen py-12 px-6 bg-slate-50 animate-in fade-in duration-500">
       <div class="max-w-2xl mx-auto">
-        <div class="flex items-center space-x-2 mb-8">
-          <div class="flex-grow h-2 bg-white rounded-full overflow-hidden">
-            <div class="h-full bg-primary-600 w-3/4"></div>
+        <!-- Progress Bar -->
+        <div class="flex items-center space-x-2 mb-10">
+          <div class="flex-grow h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div class="h-full bg-primary-600 transition-all duration-1000" style="width: 75%"></div>
           </div>
-          <span class="text-xs font-bold text-primary-400 whitespace-nowrap">ステップ 3/4 (知識クイズ)</span>
+          <span class="text-xs font-bold text-slate-400 whitespace-nowrap">ステップ 3/4 (知識クイズ)</span>
         </div>
 
-        <div class="bg-white rounded-3xl shadow-xl p-12 text-center">
-          <span class="bg-primary-100 text-primary-700 px-4 py-1 rounded-full text-xs font-bold mb-6 inline-block">QUESTION ${index + 1}</span>
-          <h2 class="text-2xl font-bold mb-10 text-slate-900">${quiz.question}</h2>
-
-          <div class="space-y-4">
+        <div class="bg-white rounded-[2rem] shadow-xl shadow-slate-200/50 p-8 md:p-14 text-center border border-slate-100">
+          <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-primary-50 text-primary-700 text-xs font-bold mb-8">
+            <span class="mr-2">📝</span> QUESTION ${index + 1}
+          </div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-12 text-slate-800 leading-tight">${quiz.question}</h2>
+          
+          <div class="grid grid-cols-1 gap-4 text-left">
             ${quiz.options.map((option, i) => `
-              <button onclick="window.checkQuiz(${index}, ${i})" class="w-full p-6 rounded-2xl border-2 border-slate-50 font-bold text-slate-700 hover:border-primary-400 hover:bg-primary-50 transition-all text-left flex justify-between items-center group bg-slate-50/50">
-                ${option}
-                <div class="h-6 w-6 rounded-full border-2 border-slate-300 group-hover:border-primary-400 bg-white"></div>
+              <button onclick="window.checkQuiz(${index}, ${i})" 
+                class="group w-full p-6 rounded-2xl border-2 border-slate-50 bg-slate-50/50 font-bold text-slate-700 
+                hover:border-primary-400 hover:bg-primary-50 hover:text-primary-700 transition-all duration-300
+                flex justify-between items-center text-lg active:scale-[0.98]">
+                <span class="flex-grow pr-4">${option}</span>
+                <div class="flex-shrink-0 h-8 w-8 rounded-full border-2 border-slate-200 bg-white group-hover:border-primary-400 group-hover:bg-primary-100 flex items-center justify-center transition-colors">
+                  <div class="h-3 w-3 rounded-full bg-primary-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
               </button>
             `).join('')}
           </div>
         </div>
+
+        <div class="mt-8 text-center">
+           <button onclick="window.renderLessonPage()" class="text-slate-400 text-sm font-bold hover:text-slate-600 hover:underline transition-all">← 解説に戻って確認する</button>
+        </div>
       </div>
-    </div >
-    `;
+    </div>
+  `;
   window.scrollTo(0, 0);
 }
 
@@ -225,17 +237,23 @@ function checkQuiz(quizIndex, selectedIndex) {
   const isCorrect = selectedIndex === quiz.answer;
 
   const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-sm p-6';
+  modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/40 backdrop-blur-md p-6';
   modal.innerHTML = `
-    < div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-10 text-center animate-in zoom-in duration-300" >
-      <div class="h-20 w-20 ${isCorrect ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'} rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
+    <div class="bg-white rounded-[2.5rem] shadow-2xl max-w-sm w-full p-10 text-center animate-in zoom-in duration-300 border border-slate-100">
+      <div class="h-24 w-24 ${isCorrect ? 'bg-green-50 text-green-500' : 'bg-red-50 text-red-500'} rounded-full flex items-center justify-center text-5xl mx-auto mb-8 shadow-inner">
         ${isCorrect ? '✨' : '❌'}
       </div>
-      <h3 class="text-2xl font-bold mb-2">${isCorrect ? '正解！' : 'おしい！'}</h3>
-      <p class="text-slate-500 mb-8">${quiz.explanation}</p>
-      <button onclick="this.closest('.fixed').remove(); window.renderExercisePage(0)" class="btn-primary w-full">次へ進む</button>
-    </div >
-    `;
+      <h3 class="text-3xl font-bold mb-4 text-slate-800">${isCorrect ? '正解！' : 'おしい！'}</h3>
+      <div class="bg-slate-50 rounded-2xl p-6 mb-8 text-left">
+        <p class="text-slate-600 leading-relaxed font-medium">${quiz.explanation}</p>
+      </div>
+      <button onclick="this.closest('.fixed').remove(); ${isCorrect ? 'window.renderExercisePage(0)' : ''}" 
+        class="w-full py-4 rounded-2xl font-bold text-lg transition-all active:scale-[0.95] 
+        ${isCorrect ? 'btn-primary shadow-lg shadow-primary-500/30' : 'bg-slate-200 text-slate-600 hover:bg-slate-300 shadow-sm'}">
+        ${isCorrect ? '次へ進む' : 'もう一度考える'}
+      </button>
+    </div>
+  `;
   document.body.appendChild(modal);
 }
 
@@ -244,27 +262,52 @@ function renderExercisePage(index) {
   const exercise = currentUnit.exercises[index];
 
   app.innerHTML = `
-    < div class="min-h-screen py-12 px-6 bg-slate-900 text-white" >
-      <div class="max-w-2xl mx-auto">
-        <div class="flex items-center space-x-2 mb-8">
-          <div class="flex-grow h-2 bg-slate-800 rounded-full overflow-hidden">
-            <div class="h-full bg-primary-500 w-full"></div>
+    <div class="min-h-screen py-12 px-6 bg-slate-50 animate-in slide-in-from-right duration-500">
+      <div class="max-w-3xl mx-auto">
+        <!-- Progress Bar -->
+        <div class="flex items-center space-x-2 mb-10">
+          <div class="flex-grow h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div class="h-full bg-primary-600 transition-all duration-1000" style="width: 100%"></div>
           </div>
-          <span class="text-xs font-bold text-slate-500 whitespace-nowrap">ステップ 4/4 (総仕上げ練習)</span>
+          <span class="text-xs font-bold text-slate-400 whitespace-nowrap">ステップ 4/4 (総仕上げ練習)</span>
         </div>
 
-        <div class="bg-slate-800 rounded-3xl p-12">
-          <h2 class="text-2xl font-bold mb-10 text-center">⭕️❌ 練習問題</h2>
-          <p class="text-xl text-center mb-12 leading-relaxed font-medium">「${exercise.question}」</p>
-
-          <div class="flex space-x-6">
-            <button onclick="window.checkExercise(${index}, true)" class="flex-grow bg-green-500 hover:bg-green-600 p-8 rounded-2xl text-4xl shadow-lg transition-transform hover:scale-105 active:scale-95">🙆‍♂️ まる</button>
-            <button onclick="window.checkExercise(${index}, false)" class="flex-grow bg-red-500 hover:bg-red-600 p-8 rounded-2xl text-4xl shadow-lg transition-transform hover:scale-105 active:scale-95">🙅‍♂️ ばつ</button>
+        <div class="bg-white rounded-[2.5rem] shadow-xl shadow-slate-200/50 p-10 md:p-16 text-center border border-slate-100 relative overflow-hidden">
+          <div class="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-green-400 via-primary-500 to-red-400"></div>
+          
+          <div class="inline-flex items-center px-4 py-1.5 rounded-full bg-slate-100 text-slate-600 text-xs font-bold mb-10">
+            🥇 FINAL CHALLENGE
           </div>
+          
+          <h2 class="text-2xl md:text-3xl font-bold mb-4 text-slate-800">⭕️❌ 練習問題</h2>
+          <p class="text-slate-400 text-sm mb-12">問題文をよく読んで、正しいか間違っているか選ぼう！</p>
+
+          <div class="bg-slate-50 rounded-3xl p-8 mb-12 border border-slate-100 italic transition-all hover:bg-slate-100">
+            <p class="text-xl md:text-2xl text-slate-700 leading-relaxed font-bold">「 ${exercise.question} 」</p>
+          </div>
+          
+          <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
+            <button onclick="window.checkExercise(${index}, true)" 
+              class="flex-1 bg-green-500 hover:bg-green-600 text-white p-8 rounded-[2rem] text-4xl shadow-lg shadow-green-200 
+              transition-all hover:scale-105 active:scale-95 flex flex-col items-center group">
+              <span class="text-5xl mb-2 group-hover:animate-bounce">🙆‍♂️</span>
+              <span class="text-2xl font-black">まる</span>
+            </button>
+            <button onclick="window.checkExercise(${index}, false)" 
+              class="flex-1 bg-red-500 hover:bg-red-600 text-white p-8 rounded-[2rem] text-4xl shadow-lg shadow-red-200 
+              transition-all hover:scale-105 active:scale-95 flex flex-col items-center group">
+              <span class="text-5xl mb-2 group-hover:animate-bounce">🙅‍♂️</span>
+              <span class="text-2xl font-black">ばつ</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-8 text-center text-slate-400 text-sm font-medium">
+          これをクリアすれば単元終了です！がんばって！
         </div>
       </div>
-    </div >
-    `;
+    </div>
+  `;
   window.scrollTo(0, 0);
 }
 
@@ -273,17 +316,22 @@ function checkExercise(index, selected) {
   const isCorrect = selected === exercise.answer;
 
   const modal = document.createElement('div');
-  modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/90 backdrop-blur-md p-6';
+  modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-lg p-6';
   modal.innerHTML = `
-    < div class="bg-white rounded-3xl shadow-2xl max-w-sm w-full p-10 text-center text-slate-900 animate-in zoom-in duration-300" >
-      <div class="h-20 w-20 ${isCorrect ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'} rounded-full flex items-center justify-center text-4xl mx-auto mb-6">
+    <div class="bg-white rounded-[2.5rem] shadow-2xl max-w-sm w-full p-10 text-center text-slate-900 animate-in zoom-in duration-300 border-4 ${isCorrect ? 'border-green-400' : 'border-red-400'}">
+      <div class="h-28 w-28 ${isCorrect ? 'bg-green-100 text-green-600' : 'bg-red-100 text-red-600'} rounded-full flex items-center justify-center text-6xl mx-auto mb-8 shadow-xl">
         ${isCorrect ? '🎊' : '💦'}
       </div>
-      <h3 class="text-2xl font-bold mb-2">${isCorrect ? '完ぺき！' : 'ざんねん！'}</h3>
-      <p class="text-slate-500 mb-8">${exercise.explanation}</p>
-      <button onclick="this.closest('.fixed').remove(); window.renderHome()" class="btn-primary w-full">クリア！一覧に戻る</button>
-    </div >
-    `;
+      <h3 class="text-3xl font-black mb-4 ${isCorrect ? 'text-green-600' : 'text-red-600'}">${isCorrect ? '完ぺき！' : 'ざんねん！'}</h3>
+      <div class="bg-slate-50 rounded-2xl p-6 mb-8 text-left border border-slate-100">
+        <p class="text-slate-600 leading-relaxed font-bold">${exercise.explanation}</p>
+      </div>
+      <button onclick="this.closest('.fixed').remove(); ${isCorrect ? 'window.renderHome()' : ''}" 
+        class="w-full py-5 rounded-3xl font-black text-xl transition-all active:scale-[0.9] shadow-xl ${isCorrect ? 'btn-primary bg-gradient-to-r from-primary-600 to-blue-600' : 'bg-slate-200 text-slate-600'}">
+        ${isCorrect ? 'クリア！一覧に戻る' : 'もう一度やってみる'}
+      </button>
+    </div>
+  `;
   document.body.appendChild(modal);
 }
 
