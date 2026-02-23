@@ -33,9 +33,9 @@ export const units = [
         ],
         exercises: [
             {
-                question: '簿記の大きな目的の一つは、「どれくらい儲かったか」を知ることである。',
-                type: 'true_false',
-                answer: true,
+                question: '簿記の大きな目的の一つは、次のうちどれでしょう？',
+                options: ['社員の数を数えること', 'どれくらい儲かったかを知ること', '商品の色を決めること'],
+                answer: 1,
                 explanation: 'その通り！「損益計算書（そんえきけいさんしょ）」という書類を作るために記録します。'
             }
         ]
@@ -72,9 +72,9 @@ export const units = [
         ],
         exercises: [
             {
-                question: '銀行から借りたお金（借入金）は、あとで返す義務があるので「負債（ふさい）」である。',
-                type: 'true_false',
-                answer: true,
+                question: '銀行から借りたお金（借入金）は、簿記の5つのグループのうちどれに当てはまるでしょう？',
+                options: ['資産（しさん）', '負債（ふさい）', '純資産（じゅんしさん）'],
+                answer: 1,
                 explanation: 'その通り！将来お金を支払わなければならないマイナスの財産は「負債」と言います。'
             }
         ]

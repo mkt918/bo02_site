@@ -362,26 +362,20 @@ function renderExercisePage(index) {
             🥇 FINAL CHALLENGE
           </div>
           
-          <h2 class="text-2xl md:text-3xl font-bold mb-4 text-slate-800">⭕️❌ 練習問題</h2>
-          <p class="text-slate-400 text-sm mb-12">問題文をよく読んで、正しいか間違っているか選ぼう！</p>
-
-          <div class="bg-slate-50 rounded-3xl p-8 mb-12 border border-slate-100 italic transition-all hover:bg-slate-100">
-            <p class="text-xl md:text-2xl text-slate-700 leading-relaxed font-bold">「 ${exercise.question} 」</p>
-          </div>
+          <h2 class="text-2xl md:text-3xl font-bold mb-12 text-slate-800 leading-tight">${exercise.question}</h2>
           
-          <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-8">
-            <button onclick="window.checkExercise(${index}, true)" 
-              class="flex-1 bg-green-500 hover:bg-green-600 text-white p-8 rounded-[2rem] text-4xl shadow-lg shadow-green-200 
-              transition-all hover:scale-105 active:scale-95 flex flex-col items-center group">
-              <span class="text-5xl mb-2 group-hover:animate-bounce">🙆‍♂️</span>
-              <span class="text-2xl font-black">まる</span>
-            </button>
-            <button onclick="window.checkExercise(${index}, false)" 
-              class="flex-1 bg-red-500 hover:bg-red-600 text-white p-8 rounded-[2rem] text-4xl shadow-lg shadow-red-200 
-              transition-all hover:scale-105 active:scale-95 flex flex-col items-center group">
-              <span class="text-5xl mb-2 group-hover:animate-bounce">🙅‍♂️</span>
-              <span class="text-2xl font-black">ばつ</span>
-            </button>
+          <div class="grid grid-cols-1 gap-4 text-left">
+            ${exercise.options.map((option, i) => `
+              <button onclick="window.checkExercise(${index}, ${i})" 
+                class="group w-full p-6 rounded-2xl border-2 border-slate-50 bg-slate-50/50 font-bold text-slate-700 
+                hover:border-primary-400 hover:bg-primary-50 hover:text-primary-700 transition-all duration-300
+                flex justify-between items-center text-lg active:scale-[0.98]">
+                <span class="flex-grow pr-4">${option}</span>
+                <div class="flex-shrink-0 h-8 w-8 rounded-full border-2 border-slate-200 bg-white group-hover:border-primary-400 group-hover:bg-primary-100 flex items-center justify-center transition-colors">
+                  <div class="h-3 w-3 rounded-full bg-primary-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                </div>
+              </button>
+            `).join('')}
           </div>
         </div>
 
@@ -394,9 +388,9 @@ function renderExercisePage(index) {
   window.scrollTo(0, 0);
 }
 
-function checkExercise(index, selected) {
+function checkExercise(index, selectedIndex) {
   const exercise = currentUnit.exercises[index];
-  const isCorrect = selected === exercise.answer;
+  const isCorrect = selectedIndex === exercise.answer;
 
   const modal = document.createElement('div');
   modal.className = 'fixed inset-0 z-[100] flex items-center justify-center bg-slate-900/60 backdrop-blur-lg p-6';
