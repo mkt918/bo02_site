@@ -1,3 +1,16 @@
+// 【追加用テンプレート】新しい章を追加する際はこのブロックをコピーして使ってください
+// {
+//     id: 'unit-x',
+//     title: '第X章：タイトル',
+//     description: '概要文',
+//     icon: 'アイコン',
+//     color: 'テーマカラー (blue/red/green/orange等)',
+//     reviewQuizzes: [ /* ...前章の復習3択クイズ... */ ],
+//     lessons: [{ title: 'タイトル', presentationUrl: 'PPTX等の埋め込みURL', file: 'xxx.html' }],
+//     quizzes: [ /* ...今回の確認3択クイズ... */ ],
+//     exercises: [ /* ...総仕上げの3択クイズ... */ ]
+// }
+
 export const units = [
     {
         id: 'intro',
@@ -5,21 +18,20 @@ export const units = [
         description: '簿記の社会的役割と、効率的な学習の必要性を理解します。',
         icon: '📽️',
         color: 'blue',
-        slides: [
+        reviewQuizzes: [
             {
-                title: '簿記のミッション',
-                content: 'お店の「家計簿」のようなもの。どれくらい儲かったか、何を持っているかを記録します。',
-                image: 'https://images.unsplash.com/photo-1554224155-1696413565d3?auto=format&fit=crop&q=80&w=800'
-            },
-            {
-                title: '二つの重要ワード',
-                content: '・儲け（損益計算書）：どれだけ稼いだかな？<br>・財産（貸借対照表）：何を持っているかな？',
-                image: 'https://images.unsplash.com/photo-1450101499163-c8848c66ca85?auto=format&fit=crop&q=80&w=800'
+                question: '（ウォームアップ）会社の「家計簿」のような記録ルールを何と呼ぶでしょう？',
+                options: ['簿外記録', '簿記（ぼき）', '募金'],
+                answer: 1,
+                explanation: '簿記とは、会社のお金の出入りを記録する「ビジネスの基礎教養」です。'
             }
         ],
         lessons: [
             {
                 title: '簿記はビジネスの記録係',
+                // For Unit 1, we embed a dummy presentation or leave empty since unit1 was previously using native slides.
+                // You can add your actual Google Slide link here.
+                presentationUrl: '',
                 file: 'intro.html'
             }
         ],

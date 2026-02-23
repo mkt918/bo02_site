@@ -81,55 +81,11 @@ function renderUnit(unitId) {
   currentUnit = unit;
   if (unit.reviewQuizzes && unit.reviewQuizzes.length > 0) {
     renderReviewQuizPage(0);
-  } else if (unit.slides && unit.slides.length > 0) {
-    renderSlidePage(0);
   } else if (unit.lessons && unit.lessons.length > 0) {
     renderLessonPage();
   } else {
     alert('準備中です！');
   }
-}
-
-function renderSlidePage(index) {
-  currentMode = 'slide';
-  const slide = currentUnit.slides[index];
-
-  app.innerHTML = `
-    <div class="min-h-[80vh] flex flex-col pt-8 bg-slate-50">
-      <div class="max-w-5xl mx-auto w-full px-6 flex-grow">
-        <!-- Progress Bar -->
-        <div class="flex items-center space-x-2 mb-8">
-          <div class="flex-grow h-2 bg-slate-200 rounded-full overflow-hidden">
-            <div class="h-full bg-primary-600 w-1/4"></div>
-          </div>
-          <span class="text-xs font-bold text-slate-400 whitespace-nowrap">ステップ 1/4 (スライド)</span>
-        </div>
-
-        <div class="bg-white rounded-3xl shadow-xl overflow-hidden min-h-[500px] flex flex-col md:flex-row">
-          <div class="md:w-1/2 p-12 flex flex-col justify-center">
-            <span class="text-primary-600 font-bold text-sm mb-2">SLIDE ${index + 1}</span>
-            <h2 class="text-3xl font-bold mb-6 text-slate-900">${slide.title}</h2>
-            <p class="text-lg text-slate-600 leading-relaxed mb-8">${slide.content}</p>
-            
-            <div class="mt-auto flex space-x-4">
-              ${index > 0 ? `<button onclick="window.renderSlidePage(${index - 1})" class="px-6 py-2 border-2 border-slate-200 rounded-full font-bold text-slate-600 hover:bg-slate-50">戻る</button>` : ''}
-              ${index < currentUnit.slides.length - 1 ?
-      `<button onclick="window.renderSlidePage(${index + 1})" class="btn-primary">次へ</button>` :
-      `<button onclick="window.renderLessonPage()" class="btn-primary">解説を読む</button>`}
-            </div>
-          </div>
-          <div class="md:w-1/2 bg-slate-100 flex items-center justify-center p-8">
-            <img src="${slide.image}" alt="${slide.title}" class="rounded-2xl shadow-lg max-h-[400px] object-cover w-full h-full">
-          </div>
-        </div>
-      </div>
-      
-      <div class="p-6 text-center">
-        <button onclick="window.renderHome()" class="text-slate-400 text-sm hover:text-slate-600 font-medium">← 単元一覧に戻る</button>
-      </div>
-    </div>
-  `;
-  window.scrollTo(0, 0);
 }
 
 function renderReviewQuizPage(index) {
@@ -414,7 +370,6 @@ function checkExercise(index, selectedIndex) {
 
 // Global exposure for event handlers
 window.startUnit = renderUnit;
-window.renderSlidePage = renderSlidePage;
 window.renderReviewQuizPage = renderReviewQuizPage;
 window.checkReviewQuiz = checkReviewQuiz;
 window.renderLessonPage = renderLessonPage;

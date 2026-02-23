@@ -1,0 +1,67 @@
+<!-- 
+===================================================
+学習コンテンツ用テンプレートファイル
+（新しい「章(unit)」を作る際にこの中身をコピーして使ってください。）
+=================================================== 
+-->
+
+<div class="space-y-6 text-slate-700 leading-relaxed">
+
+    <!-- 1. 導入テキストブロック -->
+    <p class="mb-6">
+        ここに導入文を書きます。改行が必要な場合は <code>&lt;br&gt;</code> タグを使います。<br>
+        初学者にも分かりやすい言葉で、今回の学習テーマを簡単に説明しましょう。
+    </p>
+
+    <!-- 2. 横並びの比較・要素ブロック (2列) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+
+        <!-- 左：青いカード（例：メリット、ポジティブな要素、資産など） -->
+        <div class="bg-blue-50 p-6 rounded-3xl border border-blue-100 shadow-sm">
+            <h4 class="font-bold text-blue-800 mb-3 flex items-center gap-2 text-lg">
+                <span class="text-2xl">💡</span>
+                青い要素のタイトル
+            </h4>
+            <p class="text-blue-700 text-sm leading-relaxed mb-3 font-medium">
+                ここに簡単な解説文を書きます。
+            </p>
+            <ul class="list-disc pl-5 text-blue-700 text-sm space-y-1">
+                <li><strong>太字項目1</strong>：補足説明</li>
+                <li><strong>太字項目2</strong>：補足説明</li>
+            </ul>
+        </div>
+
+        <!-- 右：赤いカード（例：デメリット、ネガティブな要素、負債など） -->
+        <div class="bg-red-50 p-6 rounded-3xl border border-red-100 shadow-sm">
+            <h4 class="font-bold text-red-800 mb-3 flex items-center gap-2 text-lg">
+                <span class="text-2xl">⚠️</span>
+                赤い要素のタイトル
+            </h4>
+            <p class="text-red-700 text-sm leading-relaxed mb-3 font-medium">
+                ここに簡単な解説文を書きます。
+            </p>
+            <ul class="list-disc pl-5 text-red-700 text-sm space-y-1">
+                <li><strong>太字項目1</strong>：補足説明</li>
+                <li><strong>太字項目2</strong>：補足説明</li>
+            </ul>
+        </div>
+
+    </div> <!-- // 横並びブロック終了 -->
+
+    <!-- 3. 横幅いっぱいの強調ブロック（例：純資産、重要な概念など） -->
+    <div class="bg-green-50 p-6 rounded-3xl border border-green-100 shadow-sm mb-8">
+        <h4 class="font-bold text-green-800 mb-3 flex items-center gap-2 text-lg">
+            <span class="text-2xl">💎</span>
+            緑の要素のタイトル
+        </h4>
+        <p class="text-green-700 text-sm leading-relaxed font-medium">
+            ここに解説文を書きます。幅広くスペースを使いたい時に便利です。
+        </p>
+    </div>
+
+    <!-- 4. その日の「まとめ」ブロック -->
+    <p class="bg-orange-50 p-4 border-l-4 border-orange-400 rounded-r-lg text-orange-800 font-bold mt-10">
+        💡 【今日のまとめ】ここに、今回の学習で一番覚えてほしいことを1行で書きます！
+    </p>
+
+</div>
